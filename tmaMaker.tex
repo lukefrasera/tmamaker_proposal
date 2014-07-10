@@ -1,6 +1,8 @@
 \documentclass[a4paper,10pt,oneside]{article}
 
 \usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
 
 
@@ -33,13 +35,31 @@ The Kmeans segmentation was extended further by the work of the first histogram 
 \section{Registration}
 \begin{figure}[hbtp]
 	\centering
-	\includegraphics[height=3cm]{images/PO13-00516A1_1_7_201305171148.png}
-	\includegraphics[height=3cm]{images/PO1300516_A1.JPG} 
-	\includegraphics[height=3cm]{images/PO14-00496A1Level1_1_2_201404181459.png} 
-	\includegraphics[height=3cm]{images/PO1400496_A1.JPG} 
-	\includegraphics[height=3cm]{images/PO14-00482B3_1_2_201404171123.png} 
-	\includegraphics[height=3cm]{images/PO14004821_B3.JPG} 
-	\caption{Image of subsurface tissue.}
+  \begin{subfigure}[b]{.2\textwidth}
+    \includegraphics[width=3cm]{images/PO13-00516A1_1_7_201305171148.png}
+    \caption{Scan}
+  \end{subfigure}
+  \begin{subfigure}[b]{.2\textwidth}
+	  \includegraphics[width=3cm]{images/PO1300516_A1.JPG}
+    \caption{Block}
+  \end{subfigure}
+  \begin{subfigure}[b]{.2\textwidth}
+	  \includegraphics[width=3cm]{images/PO14-00496A1Level1_1_2_201404181459.png} 
+    \caption{Scan}
+  \end{subfigure}
+  \begin{subfigure}[b]{.2\textwidth}
+	  \includegraphics[width=3cm]{images/PO1400496_A1.JPG} 
+    \caption{Block}
+  \end{subfigure}
+  \begin{subfigure}[b]{.2\textwidth}
+	  \includegraphics[width=3cm]{images/PO14-00482B3_1_2_201404171123.png} 
+    \caption{Scan}
+  \end{subfigure}
+  \begin{subfigure}[b]{.2\textwidth}
+	  \includegraphics[width=3cm]{images/PO14004821_B3.JPG} 
+    \caption{Block}
+  \end{subfigure}
+	\caption{(a) and (b) group Block and Scan, (c) and (d) group Block and Scan, and (e) and (f) group Block and Scan representing the issues of subsurface tissue.}
 	\label{fig:subsurface}
 \end{figure}
 Image registration is the step that allows to convert between the scanned image and the physical space of the paraffin block inside the mechanical TMA machine. Registration is central for coring the paraffin blocks without accurate registration the coring positions defined on the scanned image will not lineup with the paraffin block and the TMA will contain bad and unwanted tissue. The coring process proved to be a very difficult component. The two images that need to be registered are typically very different making it difficult for reliable registration. As seen in Figure the relation between the scanned image and the paraffin block image is limited. The lack of similarity is due to the fact that the scanned image is from a top layer slice of the paraffin block and does not contain subsurface tissue information that is present in the paraffin block image.
