@@ -5,7 +5,6 @@
 \usepackage{subcaption}
 \usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
 
-
 \author{Luke Fraser}
 \title{TMAker}
 \date{\today}
@@ -15,6 +14,13 @@
 The software design of the project consists of three central components segmentation, registration, and coring location positioning. Segmentation involves grouping the scanned biopsy images into separate regions as well as recognizing the cancerous region. The registration step maps the scanned biopsy image to an image of the current paraffin block ready for coring in the TMA machine. Defining a coring description is the step where each individual coring location is generated with respect to the paraffin block. With all 3 of these components in operation successful TMA's can be created.
 
 \section{Image I/O}
+
+\begin{figure}[hbtp]
+  \includegraphics[width=4cm]{visualization/Pyramid.PO13-00516A1_1_7_201305171148.png}
+  \caption{A Pyramid Image}
+  \label{fig:pyramidimage}
+\end{figure}
+
 The images acquired from the medical scanner were very large and they were compressed into two special formats, JPEG2000 and Aperio's Medical Imaging format. Each of the images were around 90,000x90,000 pixels. When compressed the images were around 300MB in size, but uncompressed would be around 15GB. This presented a challenge for processing images at such a large scale because they cannot be viewed in their entirety without filling the RAM of a modern computer. Also in many cases the full resolution was not needed or couldn't be used due to computational cost of processing so many pixels.
 
 It was decided that using the original image formats was inconvenient. Both Aperio and JPEG2000 are not standard formats accepted by most image processing libraries making it difficult to read in data for processing. It was important to convert to a more standard format that could be used by both OpenCV and Matlab. First an attempt was made to directly convert from the Aperio format using the OpenSlide library directly into the TIFF format. This proved difficult to manage and it was taking up more time that it was worth considering the process would need to replicated for the JPEG2000 format as well. Learning all three image formats would have taken too long to understand in great detail. Other libraries were eventually used to make it easier to convert from the non-standard image formats.
@@ -35,7 +41,7 @@ The next approach involved using a K-means Squared segmentation to break up the 
 The Kmeans segmentation was extended further by the work of the first histogram method. The histogram provided useful information on the number of regions in the image. To improve results from the histogram data filtering was used to smooth the histogram to provide better local maxima detection and remove spurious maxima. The local maxima thresholded below a probability and then counted to determine the number of regions present in the image. This value would then be sent to the kmeans algorithm to determine the proper regions for segmentation.
 
 %Luke: did you test this at multiple (all) resolutions?
-%Luke: it would be great to give examples of several images taken through the entire process (at all the resolutions you tested): 1) original image, 2) histogram, 3) smoothed hystogram with # of groups, 4) results of Kmeans. 
+%Luke: it would be great to give examples of several images taken through the entire process (at all the resolutions you tested): 1) original image, 2) histogram, 3) smoothed histogram with # of groups, 4) results of Kmeans. 
 
 % limiting the pixel data
 % deciding the desired number of regions
