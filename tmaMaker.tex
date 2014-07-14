@@ -33,6 +33,25 @@ The OpenTIFF format was used to process the images and store them in a tiled and
 %Luke: could you include the resolutions for each of the levels in the pyramid? Is there a way to visualize the pyramid for several example images?
 
 \section{Image Segmentation}
+\begin{figure}[hbpt]
+  \centering
+  \begin{subfigure}{5cm}
+    \includegraphics[width=5cm]{images/PO13-00516A1_1_7_201305171148_half.png}
+    \caption{Original image.}
+  \end{subfigure}
+  \begin{subfigure}{5cm}
+    \includegraphics[width=5cm]{images/PO13-00516A1_1_7_201305171148_cluster_1.png}
+    \caption{Segmented Background.}
+  \end{subfigure}
+  \begin{subfigure}{5cm}
+    \includegraphics[width=5cm]{images/PO13-00516A1_1_7_201305171148_cluster_2.png}
+    \caption{Segmented color cluster.}
+  \end{subfigure}
+  \begin{subfigure}{5cm}
+    \includegraphics[width=5cm]{images/PO13-00516A1_1_7_201305171148_cluster_3.png}
+    \caption{Segmented color cluster.}
+  \end{subfigure}
+\end{figure}
 The scanned slide images prior to acquisition were stained providing color differences between cancerous and non-cancerous cells. At full resolution individual cell color contribution could be seen, but at lower resolutions the image appeared to have different color region descriptions. Where large concentrations of cancerous cells represented one color region and non cancerous cells represented another. This made color and obvious descriptor for segmentation.
 
 The first segmentation attempt used histogram analysis to segment the pixels into regions. Each image was converted into the HSV(Hue Saturation and Value) color space. The Hue value could then be used because it is an unbiased descriptor of color in an image. A histogram of the Hue channel was created and the highest probable local maxima of the data set were accepted as the main color regions of the image. This naive approach however provided poor results and furthermore did not adequately segment the images. Although this method did provide useful segmentation information about the number of regions in the image.
@@ -41,7 +60,7 @@ The next approach involved using a K-means Squared segmentation to break up the 
 
 %Luke: above, why chose precisely 3 groups, not more or fewer?
 
-The Kmeans segmentation was extended further by the work of the first histogram method. The histogram provided useful information on the number of regions in the image. To improve results from the histogram data filtering was used to smooth the histogram to provide better local maxima detection and remove spurious maxima. The local maxima thresholded below a probability and then counted to determine the number of regions present in the image. This value would then be sent to the kmeans algorithm to determine the proper regions for segmentation. Furthermore the amount of pixel data processed is limited by simple thresholding of the background pixels. This reduces the number of regions in the image by one.
+The Kmeans segmentation was extended further by the work of the first histogram method. The histogram provided useful information on the number of regions in the image. To improve results from the histogram data filtering was used to smooth the histogram to provide better local maxima detection and remove spurious maxima. The local maxima thresholded below a probability and then counted to determine the number of regions present in the image. This value would then be sent to the kmeans algorithm to determine the proper regions for segmentation. Furthermore the amount of pixel data processed is limited by simple thresholding of the background pixels.
 
 %Luke: did you test this at multiple (all) resolutions?
 %Luke: it would be great to give examples of several images taken through the entire process (at all the resolutions you tested): 1) original image, 2) histogram, 3) smoothed histogram with # of groups, 4) results of Kmeans. 
