@@ -3,6 +3,7 @@
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{amsmath}
 \usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
 
 \author{Luke Fraser}
@@ -62,18 +63,190 @@ The OpenTIFF format was used to process the images and store them in a tiled and
 \end{figure}
 The scanned slide images prior to acquisition were stained providing color differences between cancerous and non-cancerous cells. At full resolution individual cell color contribution could be seen, but at lower resolutions the image appeared to have different color region descriptions. Where large concentrations of cancerous cells represented one color region and non cancerous cells represented another. This made color and obvious descriptor for segmentation.
 
-The first segmentation attempt used histogram analysis to segment the pixels into regions. Each image was converted into the HSV(Hue Saturation and Value) color space. The Hue value could then be used because it is an unbiased descriptor of color in an image. A histogram of the Hue channel was created and the highest probable local maxima of the data set were accepted as the main color regions of the image. This naive approach however provided poor results and furthermore did not adequately segment the images. The histogram method did provide useful segmentation information about the number of regions in the image which could be used by a kmenas algorithm for improved segmentation.
+The first segmentation attempt used histogram analysis to segment the pixels into regions. Each image was converted into the HSV(Hue Saturation and Value) color space. The Hue value could then be used because it is an unbiased descriptor of color in an image. A histogram of the Hue channel was created and the highest probable local maxima of the data set were accepted as the main color regions of the image. This naive approach however provided poor results and furthermore did not adequately segment the images. The histogram method did provide useful segmentation information about the number of regions in the image which could be used by a K-Means algorithm for improved segmentation.
 
-The next approach used a K-means clustering segmentation to break up the image into cancerous and non-cancerous regions. Here the image was converted into the LAB(Lightness and a-b color-opponent) color space. The LAB colorspace was used because pixels in the space are more evenly distributed across color and luminance. It is then easier to compare changes in luminance and color values against each other. It makes sense then that Euclidean distance between pixels in the LAB space provides better results than in a RGB space. The LAB image data was used for a 3-ways K-means segmentation. This limited the regions that K-means sorted the pixels into to just 3 groups. 3 groups were chosen initially because typically the images would contain only a cancerous region, non-cancerous region and background region. The results from the K-means squared segmentation were superior to the previous histogram method. The K-means was able to successfully segment between the cancerous and non-cancerous regions of the image with strong edges defined between the different regions. The resolution however was an important factor in both computation time as well as successful segmentation of every pixel in an image. As the image size increased the Kmeans algorithm began to fail on every iteration resulting in unsuccessful segmentation.
-
+The next approach used a K-means clustering segmentation to break up the image into cancerous and non-cancerous regions. Here the image was converted into the LAB(Lightness and a-b color-opponent) color space. The LAB colorspace was used because pixels in the space are more evenly distributed across color and luminance. It is then easier to compare changes in luminance and color values against each other. It makes sense then that Euclidean distance between pixels in the LAB space provides better results than in a RGB space. The LAB image data was used for a 3-ways K-means segmentation. This limited the regions that K-means sorted the pixels into to just 3 groups. 3 groups were chosen initially because typically the images would contain only a cancerous region, non-cancerous region and background region. The results from the K-means squared segmentation were superior to the previous histogram method. The K-means was able to successfully segment between the cancerous and non-cancerous regions of the image with strong edges defined between the different regions. The resolution however was an important factor in both computation time as well as successful segmentation of every pixel in an image. As the image size increased the K-Means algorithm began to fail on every iteration resulting in unsuccessful segmentation.
+%itmakes sense is not formal speech
 %Luke: above, why chose precisely 3 groups, not more or fewer?
 
 The K-means segmentation was extended further by the work of the first histogram method. The histogram provided useful information on the number of regions in the image. To improve results from the histogram data filtering was used to smooth the histogram to provide better local maxima detection and remove spurious maxima. The local maxima were thresholded below a probability and then counted to determine the number of regions present in the image. This value would then be sent to the K-means algorithm to determine the proper regions for segmentation.
 
-furthermore the segmentation problem was reduced by removing all background pixels from the K-means and histogram step. The background of each image not containing tissue was always a roughly constant white. This allowed for simple thresholding to eliminate large portions of the image. This also reduced the number of kmeans groups by one.
+furthermore the segmentation problem was reduced by removing all background pixels from the K-means and histogram step. The background of each image not containing tissue was always a roughly constant white. This allowed for simple thresholding to eliminate large portions of the image. This also reduced the number of K-means groups by one.
 
-\begin{figure}
-  \includegraphics{}
+\begin{figure}[hbtp]
+  \centering
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_3/Region_0_PO13-00516A1_1_7_201305171148.png}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_3/Region_1_PO13-00516A1_1_7_201305171148.png}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_3/Region_2_PO13-00516A1_1_7_201305171148.png}
+    \caption{Hist - ID:516 - Res: $\frac{1}{3}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_4/Region_0_PO13-00516A1_1_7_201305171148.png}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_4/Region_1_PO13-00516A1_1_7_201305171148.png}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_4/Region_2_PO13-00516A1_1_7_201305171148.png}
+    \caption{Hist - ID:516 - Res: $\frac{1}{4}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_5/Region_0_PO13-00516A1_1_7_201305171148.png}
+    \caption{Hist - ID:516 - Res: $\frac{1}{3}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_3/Region_0_PO13-00522A1_1_2_201305171639.png}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_3/Region_1_PO13-00522A1_1_2_201305171639.png}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_3/Region_2_PO13-00522A1_1_2_201305171639.png}
+    \caption{Hist - ID:522 - Res: $\frac{1}{3}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_4/Region_0_PO13-00522A1_1_2_201305171639.png}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_4/Region_1_PO13-00522A1_1_2_201305171639.png}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_4/Region_2_PO13-00522A1_1_2_201305171639.png}
+    \caption{Hist - ID:522 - Res: $\frac{1}{4}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_5/Region_0_PO13-00522A1_1_2_201305171639.png}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_5/Region_1_PO13-00522A1_1_2_201305171639.png}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_5/Region_2_PO13-00522A1_1_2_201305171639.png}
+    \caption{Hist - ID:522 - Res: $\frac{1}{5}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_3/Region_0_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_3/Region_1_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_3/Region_2_PO14-00482B3_1_2_201404171123.png}
+    \caption{Hist - ID:482 - Res: $\frac{1}{3}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_4/Region_0_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_4/Region_1_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_4/Region_2_PO14-00482B3_1_2_201404171123.png}
+    \caption{Hist - ID:482 - Res: $\frac{1}{4}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_5/Region_0_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/histogramSeg/res_reduce_5/Region_1_PO14-00482B3_1_2_201404171123.png}
+    \caption{Hist - ID:482 - Res: $\frac{1}{5}$}
+  \end{subfigure}
+  %//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  %//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  \caption{Histogram Method}
+  %//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  %//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+\end{figure}
+\begin{figure}[hbtp]
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_3/Region_0_PO13-00516A1_1_7_201305171148.png}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_3/Region_1_PO13-00516A1_1_7_201305171148.png}
+    \caption{Smooth - ID:516 - Res: $\frac{1}{3}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_4/Region_0_PO13-00516A1_1_7_201305171148.png}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_4/Region_1_PO13-00516A1_1_7_201305171148.png}
+    \caption{Smooth - ID:516 - Res: $\frac{1}{4}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_5/Region_0_PO13-00516A1_1_7_201305171148.png}
+    \caption{Smooth - ID:516 - Res: $\frac{1}{3}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_3/Region_0_PO13-00522A1_1_2_201305171639.png}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_3/Region_1_PO13-00522A1_1_2_201305171639.png}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_3/Region_2_PO13-00522A1_1_2_201305171639.png}
+    \caption{Smooth - ID:522 - Res: $\frac{1}{3}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_4/Region_0_PO13-00522A1_1_2_201305171639.png}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_4/Region_1_PO13-00522A1_1_2_201305171639.png}
+    \caption{Smooth - ID:522 - Res: $\frac{1}{4}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_5/Region_0_PO13-00522A1_1_2_201305171639.png}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_5/Region_1_PO13-00522A1_1_2_201305171639.png}
+    \caption{Smooth - ID:522 - Res: $\frac{1}{5}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_3/Region_0_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_3/Region_1_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_3/Region_2_PO14-00482B3_1_2_201404171123.png}
+    \caption{Smooth - ID:482 - Res: $\frac{1}{3}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_4/Region_0_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_4/Region_1_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_4/Region_2_PO14-00482B3_1_2_201404171123.png}
+    \caption{Smooth - ID:482 - Res: $\frac{1}{4}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_5/Region_0_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/smoothhistogram/res_reduce_5/Region_1_PO14-00482B3_1_2_201404171123.png}
+    \caption{Smooth - ID:482 - Res: $\frac{1}{5}$}
+  \end{subfigure}
+  %//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  %//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  \caption{Smoothed Histogram Method}
+  %//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  %//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+\end{figure}
+\begin{figure}[hbtp]
+  \centering
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_3/Region_1_PO13-00516A1_1_7_201305171148.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_3/Region_2_PO13-00516A1_1_7_201305171148.png}
+    \caption{K-Means - ID:516 - Res: $\frac{1}{3}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_4/Region_0_PO13-00516A1_1_7_201305171148.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_4/Region_1_PO13-00516A1_1_7_201305171148.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_4/Region_2_PO13-00516A1_1_7_201305171148.png}
+    \caption{K-Means - ID:516 - Res: $\frac{1}{4}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_5/Region_2_PO13-00516A1_1_7_201305171148.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_5/Region_0_PO13-00516A1_1_7_201305171148.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_5/Region_1_PO13-00516A1_1_7_201305171148.png}
+    \caption{K-Means - ID:516 - Res: $\frac{1}{3}$}
+  \end{subfigure}
+  
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_3/Region_0_PO13-00522A1_1_2_201305171639.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_3/Region_2_PO13-00522A1_1_2_201305171639.png}
+    \caption{K-Means - ID:522 - Res: $\frac{1}{3}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_4/Region_0_PO13-00522A1_1_2_201305171639.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_4/Region_1_PO13-00522A1_1_2_201305171639.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_4/Region_2_PO13-00522A1_1_2_201305171639.png}
+    \caption{K-Means - ID:522 - Res: $\frac{1}{4}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_5/Region_0_PO13-00522A1_1_2_201305171639.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_5/Region_2_PO13-00522A1_1_2_201305171639.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_5/Region_1_PO13-00522A1_1_2_201305171639.png}
+    \caption{K-Means - ID:522 - Res: $\frac{1}{5}$}
+  \end{subfigure}
+  
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_3/Region_0_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_3/Region_1_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_3/Region_2_PO14-00482B3_1_2_201404171123.png}
+    \caption{K-Means - ID:482 - Res: $\frac{1}{3}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_4/Region_0_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_4/Region_1_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_4/Region_2_PO14-00482B3_1_2_201404171123.png}
+    \caption{K-Means - ID:482 - Res: $\frac{1}{4}$}
+  \end{subfigure}
+  \begin{subfigure}[b]{5cm}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_5/Region_0_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_5/Region_1_PO14-00482B3_1_2_201404171123.png}
+    \includegraphics[width=5cm]{visualization/results/kmeans/res_reduce_5/Region_2_PO14-00482B3_1_2_201404171123.png}
+    \caption{K-Means - ID:482 - Res: $\frac{1}{5}$}
+  \end{subfigure}
+  %//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  %//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  \caption{K-Means Method}
+  %//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  %//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 \end{figure}
 
 %Luke: did you test this at multiple (all) resolutions?
