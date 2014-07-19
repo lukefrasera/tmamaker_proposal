@@ -1,4 +1,4 @@
-\documentclass[a4paper,10pt,oneside]{article}
+\documentclass[letterpaper,10pt,oneside]{article}
 
 \usepackage{graphicx}
 \usepackage{caption}
@@ -25,7 +25,7 @@ The software design of the project consists of three central components: segment
   \label{fig:pyramidimage}
 \end{figure}
 
-The images acquired from the medical scanner were very large and they were compressed into two special formats, JPEG2000 and Aperio's Medical Imaging format. Each of the images were around 90,000x90,000 pixels. When compressed the images were around 300MB in size, but uncompressed would be around 15GB. This presented a challenge for processing images at such a large scale because they cannot be viewed in their entirety without filling the RAM of a modern computer. Also, in many cases the full resolution was not needed or could not be used due to computational cost of processing so many pixels.
+The images acquired from the medical scanner were very large and were compressed into two special formats, JPEG2000 and Aperio's Medical Imaging format. Each of the images were around 90,000x90,000 pixels. When compressed the images were around 300MB in size, but uncompressed they would be around 15GB. This presented a challenge for processing images at such a large scale because they cannot be viewed in their entirety without filling the RAM of a modern computer. Also, in many cases the full resolution was not needed or could not be used due to computational cost of processing so many pixels.
 
 It was decided that using the original image formats was inconvenient. Both Aperio and JPEG2000 are not standard formats accepted by most image processing libraries, making it difficult to read in data for processing. It was important to convert to a more standard format that could be used by both OpenCV and Matlab. First an attempt was made to directly convert from the Aperio format using the OpenSlide library directly into the TIFF format. This proved difficult to manage and it was taking up more time that it was worth considering the process would need to be replicated for the JPEG2000 format as well. Learning all three image formats(Aperio's, JPEG2000, OpenTIFF) would have taken too long to understand in great detail. Other libraries were eventually used to make it easier to convert from the non-standard image formats.
 % Mention the need to convert with kakadu and VIPS
